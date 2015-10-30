@@ -636,6 +636,14 @@ $(selector).selectivity(<span class="string">'data'</span>, { id: 1, text: <span
 <pre class="api-example"><code><span class="comment">// sets new data on a multiple-value input:</span>
 $(selector).selectivity(<span class="string">'data'</span>, [{ id: 1, text: <span class="string">'Amsterdam'</span> }, { id: 2, text: <span class="string">'Antwerp'</span> }])</code></pre>
 
+<h2>destroy</h2>
+
+<p>Destroys the Selectivity instance.</p>
+
+<p><b>Note:</b> If you had initialized your Selectivity instance from an `&lt;input&gt;` or
+`&lt;select&gt;` element, that element is gone forever and you won't get it back by destroying the
+Selectivity instance.
+
 <h2>focus</h2>
 
 <p>Focuses the search input.</p>
