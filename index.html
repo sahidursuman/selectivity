@@ -274,8 +274,11 @@ jQuery builds without Sizzle.</li>
                         <tr>
                             <td>url</td>
                             <td>URL to send the AJAX requests to. This can be given either as a
-                                string or as a function returning a string. Additional query
-                                parameters can be provided through the <code>params</code>
+                                string or as a function returning a string. If a function is given,
+                                it is passed an <code>options</code> object with <code>offset</code>
+                                and <code>term</code> properties, like the <code>query</code> method
+                                documented below. Note the URL does not need to contain (all) query
+                                parameters, as those can be specified using the <code>params</code>
                                 option.</td>
                         </tr>
                     </tbody>
