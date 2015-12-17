@@ -105,7 +105,8 @@ var now = Date.now;
  * Creates a function that delays invoking `func` until after `wait` milliseconds
  * have elapsed since the last time it was invoked.
  *
- * See [David Corbacho's article](http://drupalmotion.com/article/debounce-and-throttle-visual-explanation)
+ * See [David Corbacho's article]
+ *                        (http://drupalmotion.com/article/debounce-and-throttle-visual-explanation)
  * for details over the differences between `_.debounce` and `_.throttle`.
  *
  * @static
@@ -254,7 +255,7 @@ Selectivity.OptionListeners.unshift(function(selectivity, options) {
             } else {
                 selectivity.dropdown.showLoading();
 
-                var url = (ajax.url instanceof Function ? ajax.url() : ajax.url);
+                var url = (ajax.url instanceof Function ? ajax.url(queryOptions) : ajax.url);
                 if (params) {
                     url += (url.indexOf('?') > -1 ? '&' : '?') + $.param(params(term, offset));
                 }
@@ -303,7 +304,7 @@ var latestQueryNum = 0;
 Selectivity.OptionListeners.push(function(selectivity, options) {
 
     var query = options.query;
-    if (query) {
+    if (query && !query._async) {
         options.query = function(queryOptions) {
             latestQueryNum++;
             var queryNum = latestQueryNum;
@@ -322,6 +323,7 @@ Selectivity.OptionListeners.push(function(selectivity, options) {
             };
             query(queryOptions);
         };
+        options.query._async = true;
     }
 });
 
@@ -382,10 +384,11 @@ var EventDelegator = _dereq_(2);
  * @param methodName Optional name of a method to call. If omitted, a Selectivity instance is
  *                   created for each element in the set of matched elements. If an element in the
  *                   set already has a Selectivity instance, the result is the same as if the
- *                   setOptions() method is called.
- * @param options Optional options object to pass to the given method or the constructor. See the
- *                documentation for the respective methods to see which options they accept. In case
- *                a new instance is being created, the following property is used:
+ *                   setOptions() method is called. If a method name is given, the options
+ *                   parameter is ignored and any additional parameters are passed to the given
+ *                   method.
+ * @param options Options object to pass to the constructor or the setOptions() method. In case
+ *                a new instance is being created, the following properties are used:
  *                inputType - The input type to use. Default input types include 'Multiple' and
  *                            'Single', but you can add custom input types to the InputTypes map or
  *                            just specify one here as a function. The default value is 'Single',
@@ -400,6 +403,7 @@ var EventDelegator = _dereq_(2);
 function selectivity(methodName, options) {
     /* jshint validthis: true */
 
+    var methodArgs = Array.prototype.slice.call(arguments, 1);
     var result;
 
     this.each(function() {
@@ -407,13 +411,13 @@ function selectivity(methodName, options) {
 
         if (instance) {
             if ($.type(methodName) !== 'string') {
-                options = methodName;
+                methodArgs = [methodName];
                 methodName = 'setOptions';
             }
 
             if ($.type(instance[methodName]) === 'function') {
                 if (result === undefined) {
-                    result = instance[methodName].call(instance, options);
+                    result = instance[methodName].apply(instance, methodArgs);
                 }
             } else {
                 throw new Error('Unknown method: ' + methodName);
@@ -531,11 +535,6 @@ function Selectivity(options) {
     this.options = {};
 
     /**
-     * Results from a search query.
-     */
-    this.results = [];
-
-    /**
      * Array of search input listeners.
      *
      * Custom listeners can be specified in the options object.
@@ -562,8 +561,8 @@ function Selectivity(options) {
         this.data(options.data || null, { triggerChange: false });
     }
 
-    this._$searchInputs = [];
-
+    this.$el.on('mouseover', this._mouseover.bind(this));
+    this.$el.on('mouseleave', this._mouseout.bind(this));
     this.$el.on('selectivity-close', this._closed.bind(this));
 
     EventDelegator.call(this);
@@ -639,6 +638,15 @@ $.extend(Selectivity.prototype, EventDelegator.prototype, {
     },
 
     /**
+     * Events map.
+     *
+     * Follows the same format as Backbone: http://backbonejs.org/#View-delegateEvents
+     */
+    events: {
+
+    },
+
+    /**
      * Filters the results to be displayed in the dropdown.
      *
      * The default implementation simply returns the results unfiltered, but the MultipleSelectivity
@@ -660,6 +668,8 @@ $.extend(Selectivity.prototype, EventDelegator.prototype, {
 
         if (this.$searchInput) {
             this.$searchInput.focus();
+        } else if (this.dropdown) {
+            this.dropdown.focus();
         }
     },
 
@@ -689,59 +699,29 @@ $.extend(Selectivity.prototype, EventDelegator.prototype, {
      * action of searching when something is typed.
      *
      * @param $input jQuery container for the input element.
-     * @param options Optional options object. May contain the following property:
-     *                noSearch - If false, no event handlers are setup to initiate searching when
-     *                           the user types in the input field. This is useful if you want to
-     *                           use the input only to handle keyboard support.
      */
-    initSearchInput: function($input, options) {
+    initSearchInput: function($input) {
 
-        this._$searchInputs.push($input);
         this.$searchInput = $input;
 
         this.searchInputListeners.forEach(function(listener) {
             listener(this, $input);
         }.bind(this));
 
-        if (!options || options.noSearch !== false) {
-            $input.on('keyup', function(event) {
-                if (!event.isDefaultPrevented()) {
-                    this.search();
-                }
-            }.bind(this));
-        }
-    },
-
-    /**
-     * Loads a follow-up page with results after a search.
-     *
-     * This method should only be called after a call to search() when the callback has indicated
-     * more results are available.
-     */
-    loadMore: function() {
-
-        this.options.query({
-            callback: function(response) {
-                if (response && response.results) {
-                    this._addResults(
-                        Selectivity.processItems(response.results),
-                        { hasMore: !!response.more }
-                    );
-                } else {
-                    throw new Error('callback must be passed a response object');
-                }
-            }.bind(this),
-            error: this._addResults.bind(this, []),
-            offset: this.results.length,
-            selectivity: this,
-            term: this.term
-        });
+        $input.on('keyup', function(event) {
+            if (!event.isDefaultPrevented()) {
+                this.search();
+            }
+        }.bind(this));
     },
 
     /**
      * Opens the dropdown.
      *
      * @param options Optional options object. May contain the following property:
+     *                search - Boolean whether the dropdown should be initialized by performing a
+     *                         search for the empty string (ie. display all results). Default is
+     *                         true.
      *                showSearchInput - Boolean whether a search input should be shown in the
      *                                  dropdown. Default is false.
      */
@@ -754,14 +734,20 @@ $.extend(Selectivity.prototype, EventDelegator.prototype, {
                 var Dropdown = this.options.dropdown || Selectivity.Dropdown;
                 if (Dropdown) {
                     this.dropdown = new Dropdown({
+                        items: this.items,
                         position: this.options.positionDropdown,
+                        query: this.options.query,
                         selectivity: this,
                         showSearchInput: options.showSearchInput
                     });
                 }
 
-                this.search('');
+                if (options.search !== false) {
+                    this.search('');
+                }
             }
+
+            this.$el.children().toggleClass('open', true);
         }
     },
 
@@ -776,17 +762,7 @@ $.extend(Selectivity.prototype, EventDelegator.prototype, {
     },
 
     /**
-     * Removes the search input last initialized with initSearchInput().
-     */
-    removeSearchInput: function() {
-
-        this._$searchInputs.pop();
-
-        this.$searchInput = this._$searchInputs[this._$searchInputs.length - 1] || null;
-    },
-
-    /**
-     * Searches for results based on the term entered in the search input.
+     * Searches for results based on the term given or the term entered in the search input.
      *
      * If an items array has been passed with the options to the Selectivity instance, a local
      * search will be performed among those items. Otherwise, the query function specified in the
@@ -797,47 +773,15 @@ $.extend(Selectivity.prototype, EventDelegator.prototype, {
      */
     search: function(term) {
 
-        var self = this;
-        function setResults(results, resultOptions) {
-            self._setResults(results, $.extend({ term: term }, resultOptions));
-        }
-
         if (term === undefined) {
-            if (!self.$searchInput) {
-                return;
-            }
-
-            term = self.$searchInput.val();
+            term = (this.$searchInput ? this.$searchInput.val() : '');
         }
 
-        if (self.items) {
-            term = Selectivity.transformText(term);
-            var matcher = self.matcher;
-            setResults(self.items.map(function(item) {
-                return matcher(item, term);
-            }).filter(function(item) {
-                return !!item;
-            }));
-        } else if (self.options.query) {
-            self.options.query({
-                callback: function(response) {
-                    if (response && response.results) {
-                        setResults(
-                            Selectivity.processItems(response.results),
-                            { hasMore: !!response.more }
-                        );
-                    } else {
-                        throw new Error('callback must be passed a response object');
-                    }
-                },
-                error: self._showError.bind(self),
-                offset: 0,
-                selectivity: self,
-                term: term
-            });
-        }
+        this.open({ search: false });
 
-        self.term = term;
+        if (this.dropdown) {
+            this.dropdown.search(term);
+        }
     },
 
     /**
@@ -1046,9 +990,9 @@ $.extend(Selectivity.prototype, EventDelegator.prototype, {
      * case it will assume the text is equal to the ID. This is useful if you're working with tags,
      * or selecting e-mail addresses for instance, but may not always be what you want.
      *
-     * @param newValue Optional new value to set. For a MultipleSelectivity instance the value must be
-     *                 an array of IDs, for a SingleSelectivity instance the value must be a single ID
-     *                 (a string or a number) or null to indicate no item is selected.
+     * @param newValue Optional new value to set. For a MultipleSelectivity instance the value must
+     *                 be an array of IDs, for a SingleSelectivity instance the value must be a
+     *                 single ID (a string or a number) or null to indicate no item is selected.
      * @param options Optional options object. May contain the following property:
      *                triggerChange - Set to false to suppress the "change" event being triggered.
      *
@@ -1088,24 +1032,11 @@ $.extend(Selectivity.prototype, EventDelegator.prototype, {
     /**
      * @private
      */
-    _addResults: function(results, options) {
-
-        this.results = this.results.concat(results);
-
-        if (this.dropdown) {
-            this.dropdown.showResults(
-                this.filterResults(results),
-                $.extend({ add: true }, options)
-            );
-        }
-    },
-
-    /**
-     * @private
-     */
     _closed: function() {
 
         this.dropdown = null;
+
+        this.$el.children().toggleClass('open', false);
     },
 
     /**
@@ -1135,10 +1066,17 @@ $.extend(Selectivity.prototype, EventDelegator.prototype, {
         if ($.type(id) === 'string') {
             return id;
         } else {
-            if (Selectivity.findById(this._data || [], id) ||
-                Selectivity.findNestedById(this.results, id)) {
+            if (Selectivity.findById(this._data || [], id)) {
                 return id;
             } else {
+                var dropdown = this.dropdown;
+                while (dropdown) {
+                    if (Selectivity.findNestedById(dropdown.results, id)) {
+                        return id;
+                    }
+                    // FIXME: reference to submenu doesn't belong in base module
+                    dropdown = dropdown.submenu;
+                }
                 return '' + id;
             }
         }
@@ -1147,25 +1085,17 @@ $.extend(Selectivity.prototype, EventDelegator.prototype, {
     /**
      * @private
      */
-    _setResults: function(results, options) {
+    _mouseout: function() {
 
-        this.results = results;
-
-        if (this.dropdown) {
-            this.dropdown.showResults(this.filterResults(results), options || {});
-        }
+        this.$el.children().toggleClass('hover', false);
     },
 
     /**
      * @private
      */
-    _showError: function(error, options) {
+    _mouseover: function() {
 
-        this.results = [];
-
-        if (this.dropdown) {
-            this.dropdown.showError(error, options);
-        }
+        this.$el.children().toggleClass('hover', true);
     }
 
 });
@@ -2312,6 +2242,13 @@ function SelectivityDropdown(options) {
     this.$results = this.$('.selectivity-results-container');
 
     /**
+     * jQuery container for the search input.
+     *
+     * May be null as long as there is no visible search input. It is set by initSearchInput().
+     */
+    this.$searchInput = null;
+
+    /**
      * Boolean indicating whether more results are available than currently displayed in the
      * dropdown.
      */
@@ -2341,6 +2278,8 @@ function SelectivityDropdown(options) {
      * Selectivity instance.
      */
     this.selectivity = selectivity;
+
+    this._closed = false;
 
     this._closeProxy = this.close.bind(this);
     if (selectivity.options.closeOnSelect !== false) {
@@ -2400,17 +2339,17 @@ $.extend(SelectivityDropdown.prototype, EventDelegator.prototype, {
      */
     close: function() {
 
-        if (this.options.showSearchInput) {
-            this.selectivity.removeSearchInput();
+        if (!this._closed) {
+            this._closed = true;
+
+            this.$el.remove();
+
+            this.removeCloseHandler();
+
+            this.selectivity.$el.off('selectivity-selecting', this._closeProxy);
+
+            this.triggerClose();
         }
-
-        this.$el.remove();
-
-        this.removeCloseHandler();
-
-        this.selectivity.$el.off('selectivity-selecting', this._closeProxy);
-
-        this.triggerClose();
     },
 
     /**
@@ -2422,8 +2361,17 @@ $.extend(SelectivityDropdown.prototype, EventDelegator.prototype, {
         'click .selectivity-load-more': '_loadMoreClicked',
         'click .selectivity-result-item': '_resultClicked',
         'mouseenter .selectivity-load-more': '_loadMoreHovered',
-        'mouseenter .selectivity-result-item': '_resultHovered',
-        'mousemove': '_recordMousePosition'
+        'mouseenter .selectivity-result-item': '_resultHovered'
+    },
+
+    /**
+     * Applies focus to the input.
+     */
+    focus: function() {
+
+        if (this.$searchInput) {
+            this.$searchInput.focus();
+        }
     },
 
     /**
@@ -2460,6 +2408,57 @@ $.extend(SelectivityDropdown.prototype, EventDelegator.prototype, {
 
         this.highlightedResult = null;
         this.loadMoreHighlighted = true;
+    },
+
+    /**
+     * Initializes the search input element.
+     *
+     * Sets the $searchInput property, invokes all search input listeners and attaches the default
+     * action of searching when something is typed.
+     *
+     * @param $input jQuery container for the input element.
+     */
+    initSearchInput: function($input) {
+
+        this.$searchInput = $input;
+
+        this.selectivity.searchInputListeners.forEach(function(listener) {
+            listener(this, $input);
+        }.bind(this));
+
+        $input.on('keyup', function(event) {
+            if (!event.isDefaultPrevented()) {
+                this.search();
+            }
+        }.bind(this));
+    },
+
+    /**
+     * Loads a follow-up page with results after a search.
+     *
+     * This method should only be called after a call to search() when the callback has indicated
+     * more results are available.
+     */
+    loadMore: function() {
+
+        this.options.query({
+            callback: function(response) {
+                if (response && response.results) {
+                    this._showResults(
+                        Selectivity.processItems(response.results),
+                        { add: true, hasMore: !!response.more }
+                    );
+                } else {
+                    throw new Error('callback must be passed a response object');
+                }
+            }.bind(this),
+            error: function() {
+                this._showResults([], { add: true });
+            }.bind(this),
+            offset: this.results.length,
+            selectivity: this.selectivity,
+            term: this.term
+        });
     },
 
     /**
@@ -2505,6 +2504,57 @@ $.extend(SelectivityDropdown.prototype, EventDelegator.prototype, {
     },
 
     /**
+     * Searches for results based on the term given or the term entered in the search input.
+     *
+     * If an items array has been passed with the options to the Selectivity instance, a local
+     * search will be performed among those items. Otherwise, the query function specified in the
+     * options will be used to perform the search. If neither is defined, nothing happens.
+     *
+     * @param term Optional term to search for. If ommitted, the value of the search input element
+     *             is used as term.
+     */
+    search: function(term) {
+
+        var self = this;
+        function setResults(results, resultOptions) {
+            self._showResults(results, $.extend({ term: term }, resultOptions));
+        }
+
+        if (term === undefined) {
+            term = (self.$searchInput ? self.$searchInput.val() : '');
+        }
+
+        if (self.options.items) {
+            term = Selectivity.transformText(term);
+            var matcher = self.selectivity.matcher;
+            setResults(self.options.items.map(function(item) {
+                return matcher(item, term);
+            }).filter(function(item) {
+                return !!item;
+            }));
+        } else if (self.options.query) {
+            self.options.query({
+                callback: function(response) {
+                    if (response && response.results) {
+                        setResults(
+                            Selectivity.processItems(response.results),
+                            { hasMore: !!response.more }
+                        );
+                    } else {
+                        throw new Error('callback must be passed a response object');
+                    }
+                },
+                error: self.showError.bind(self),
+                offset: 0,
+                selectivity: self.selectivity,
+                term: term
+            });
+        }
+
+        self.term = term;
+    },
+
+    /**
      * Selects the highlighted item.
      */
     selectHighlight: function() {
@@ -2523,12 +2573,11 @@ $.extend(SelectivityDropdown.prototype, EventDelegator.prototype, {
      */
     selectItem: function(id) {
 
-        var selectivity = this.selectivity;
-        var item = Selectivity.findNestedById(selectivity.results, id);
+        var item = Selectivity.findNestedById(this.results, id);
         if (item) {
             var options = { id: id, item: item };
-            if (selectivity.triggerEvent('selectivity-selecting', options)) {
-                selectivity.triggerEvent('selectivity-selected', options);
+            if (this.selectivity.triggerEvent('selectivity-selecting', options)) {
+                this.selectivity.triggerEvent('selectivity-selected', options);
             }
         }
     },
@@ -2676,7 +2725,7 @@ $.extend(SelectivityDropdown.prototype, EventDelegator.prototype, {
 
         this.$('.selectivity-load-more').replaceWith(this.selectivity.template('loading'));
 
-        this.selectivity.loadMore();
+        this.loadMore();
 
         this.selectivity.focus();
 
@@ -2742,6 +2791,14 @@ $.extend(SelectivityDropdown.prototype, EventDelegator.prototype, {
                 this._loadMoreClicked();
             }
         }
+    },
+
+    /**
+     * @private
+     */
+    _showResults: function(results, options) {
+
+        this.showResults(this.selectivity.filterResults(results), options || {});
     },
 
     /**
@@ -3079,6 +3136,8 @@ function listener(selectivity, $input) {
                 setTimeout(function() {
                     selectivity.close({ keepFocus: false });
                 }, 1);
+            } else if (event.keyCode === KEY_ENTER) {
+                event.preventDefault(); // don't submit forms on keydown
             }
         }
     }
@@ -3296,7 +3355,7 @@ var callSuper = Selectivity.inherits(MultipleSelectivity, {
      */
     getDataForValue: function(value) {
 
-        return value.map(this.getItemForId.bind(this)).filter(function(item) { return !!item; });
+        return value.map(this.getItemForId, this).filter(function(item) { return !!item; });
     },
 
     /**
@@ -3354,10 +3413,8 @@ var callSuper = Selectivity.inherits(MultipleSelectivity, {
         if (this.options.tokenizer) {
             term = this.options.tokenizer(term, this._data, this.add.bind(this), this.options);
 
-            if ($.type(term) === 'string') {
+            if ($.type(term) === 'string' && term !== this.$searchInput.val()) {
                 this.$searchInput.val(term);
-            } else {
-                term = '';
             }
         }
 
@@ -3430,7 +3487,7 @@ var callSuper = Selectivity.inherits(MultipleSelectivity, {
         if (data === null) {
             return [];
         } else if ($.type(data) === 'array') {
-            return data.map(this.validateItem.bind(this));
+            return data.map(this.validateItem, this);
         } else {
             throw new Error('Data for MultiSelectivity instance should be array');
         }
@@ -3643,7 +3700,7 @@ var callSuper = Selectivity.inherits(MultipleSelectivity, {
 
         if (event.added || event.removed) {
             if (this.dropdown) {
-                this.dropdown.showResults(this.filterResults(this.results), {
+                this.dropdown.showResults(this.filterResults(this.dropdown.results), {
                     hasMore: this.dropdown.hasMore
                 });
             }
@@ -3759,7 +3816,7 @@ function SingleSelectivity(options) {
     }
 
     if (options.showSearchInputInDropdown === false) {
-        this.initSearchInput(this.$('.selectivity-single-select-input'), { noSearch: true });
+        this.initSearchInput(this.$('.selectivity-single-select-input'));
     }
 }
 
@@ -3800,13 +3857,8 @@ var callSuper = Selectivity.inherits(SingleSelectivity, {
 
         callSuper(this, 'close');
 
-        var $input = this.$('.selectivity-single-select-input');
-        if (!this.$searchInput) {
-            this.initSearchInput($input, { noSearch: true });
-        }
-
         if (!options || options.keepFocus !== false) {
-            $input.focus();
+            this.$searchInput.focus();
         }
 
         this._closing = false;
@@ -3843,6 +3895,8 @@ var callSuper = Selectivity.inherits(SingleSelectivity, {
      */
     open: function(options) {
 
+        this._opening = true;
+
         var showSearchInput = (this.options.showSearchInputInDropdown !== false);
 
         callSuper(this, 'open', $.extend({ showSearchInput: showSearchInput }, options));
@@ -3850,6 +3904,8 @@ var callSuper = Selectivity.inherits(SingleSelectivity, {
         if (!showSearchInput) {
             this.focus();
         }
+
+        this._opening = false;
     },
 
     /**
@@ -3923,7 +3979,8 @@ var callSuper = Selectivity.inherits(SingleSelectivity, {
      */
     _focused: function() {
 
-        if (this.enabled && !this._closing && this.options.showDropdown !== false) {
+        if (this.enabled && !this._closing && !this._opening &&
+            this.options.showDropdown !== false) {
             this.open();
         }
     },
@@ -4004,13 +4061,6 @@ var callSuper = Selectivity.inherits(SelectivitySubmenu, SelectivityDropdown, {
      */
     close: function() {
 
-        if (this.options.restoreOptions) {
-            this.selectivity.setOptions(this.options.restoreOptions);
-        }
-        if (this.options.restoreResults) {
-            this.selectivity.results = this.options.restoreResults;
-        }
-
         if (this.submenu) {
             this.submenu.close();
         }
@@ -4076,12 +4126,11 @@ var callSuper = Selectivity.inherits(SelectivitySubmenu, SelectivityDropdown, {
      */
     selectItem: function(id) {
 
-        var selectivity = this.selectivity;
-        var item = Selectivity.findNestedById(selectivity.results, id);
+        var item = Selectivity.findNestedById(this.results, id);
         if (item && !item.submenu) {
             var options = { id: id, item: item };
-            if (selectivity.triggerEvent('selectivity-selecting', options)) {
-                selectivity.triggerEvent('selectivity-selected', options);
+            if (this.selectivity.triggerEvent('selectivity-selecting', options)) {
+                this.selectivity.triggerEvent('selectivity-selected', options);
             }
         }
     },
@@ -4150,6 +4199,7 @@ var callSuper = Selectivity.inherits(SelectivitySubmenu, SelectivityDropdown, {
                 var $dropdownEl = this.$el;
 
                 this.submenu = new Dropdown({
+                    items: item.submenu.items || null,
                     parentMenu: this,
                     position: item.submenu.positionDropdown || function($el) {
                         var dropdownPosition = $dropdownEl.position();
@@ -4159,21 +4209,12 @@ var callSuper = Selectivity.inherits(SelectivitySubmenu, SelectivityDropdown, {
                             top: $item.position().top + dropdownPosition.top + 'px'
                         }).width(width);
                     },
-                    restoreOptions: {
-                        items: selectivity.items,
-                        query: selectivity.options.query || null
-                    },
-                    restoreResults: selectivity.results,
+                    query: item.submenu.query || null,
                     selectivity: selectivity,
                     showSearchInput: item.submenu.showSearchInput
                 });
 
-                selectivity.setOptions({
-                    items: item.submenu.items || null,
-                    query: item.submenu.query || null
-                });
-
-                selectivity.search('');
+                this.submenu.search('');
             }
         }
     }
@@ -4483,10 +4524,14 @@ Selectivity.Templates = {
      *                mode - Mode in which select exists, single or multiple.
      */
     selectCompliance: function(options) {
-        if (options.mode === 'multiple' && options.name.slice(-2) !== '[]') {
-            options.name += '[]';
+        var mode = options.mode;
+        var name = options.name;
+        if (mode === 'multiple' && name.slice(-2) !== '[]') {
+            name += '[]';
         }
-        return ('<select name="' + options.name + '"' + (options.mode === 'multiple' ? ' multiple' : '') + '></select>');
+        return (
+            '<select name="' + name + '"' + (mode === 'multiple' ? ' multiple' : '') + '></select>'
+        );
     },
 
     /**
@@ -4639,28 +4684,28 @@ function bindTraditionalSelectEvents(selectivity) {
     var $el = selectivity.$el;
 
     $el.on('selectivity-init', function(event, mode) {
+        $el.append(selectivity.template('selectCompliance', {
+            mode: mode,
+            name: $el.attr('data-name')
+        })).removeAttr('data-name');
+    }).on('selectivity-init change', function() {
+        var data = selectivity._data;
+        var $select = $el.find('select');
 
-            $el.append(selectivity.template('selectCompliance', {name: $el.attr('data-name'), mode: mode}))
-              .removeAttr('data-name');
-        })
-        .on('selectivity-init change', function() {
-            var data = selectivity._data;
-            var $select = $el.find('select');
+        if (data instanceof Array) {
+            $select.empty();
 
-            if (data instanceof Array) {
-                $select.empty();
-
-                data.forEach(function(item) {
-                    $select.append(selectivity.template('selectOptionCompliance', item));
-                });
+            data.forEach(function(item) {
+                $select.append(selectivity.template('selectOptionCompliance', item));
+            });
+        } else {
+            if (data) {
+                $select.html(selectivity.template('selectOptionCompliance', data));
             } else {
-                if (data) {
-                    $select.html(selectivity.template('selectOptionCompliance', data));
-                } else {
-                    $select.empty();
-                }
+                $select.empty();
             }
-        });
+        }
+    });
 }
 
 /**
