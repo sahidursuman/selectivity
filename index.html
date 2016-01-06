@@ -621,7 +621,9 @@ jQuery builds without Sizzle.</li>
             <td>Optional options object. May contain the following property:
                 <dl>
                     <dt><b>triggerChange</b></dt>
-                    <dd>Set to <code>false</code> to suppress the <code>change</code> event.</dd>
+                    <dd>Set to <code>false</code> to suppress the <code>change</code> event. Note
+                        this will also cause the UI to not update automatically; so you may want to
+                        call <code>rerenderSelection()</code> manually when using this option.</dd>
                 </dl>
             </td>
         </tr>
@@ -683,6 +685,14 @@ destroying the Selectivity instance.
 <p><code>$(selector).selectivity(<span class="string">'remove'</span>, 1)</code></p>
 
 <p><code>$(selector).selectivity(<span class="string">'remove'</span>, { id: 1, text: <span class="string">'Amsterdam'</span> })</code></p>
+
+<h2>rerenderSelection</h2>
+
+<p>Re-renders the selection.</p>
+
+<p>Normally the UI is automatically updated whenever the selection changes, but you may want to call
+call this method explicitly if you've updated the selection with the <code>triggerChange</code>
+option set to <code>false</code>.</p>
 
 <h2>setOptions</h2>
 
@@ -746,7 +756,9 @@ destroying the Selectivity instance.
             <td>Optional options object. May contain the following property:
                 <dl>
                     <dt><b>triggerChange</b></dt>
-                    <dd>Set to <code>false</code> to suppress the <code>change</code> event.</dd>
+                    <dd>Set to <code>false</code> to suppress the <code>change</code> event. Note
+                        this will also cause the UI to not update automatically; so you may want to
+                        call <code>rerenderSelection()</code> manually when using this option.</dd>
                 </dl>
             </td>
         </tr>
