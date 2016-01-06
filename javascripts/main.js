@@ -415,7 +415,7 @@ $('#example-6').selectivity({
         results: function(data, offset) {
             return {
                 results: data.items,
-                more: (offset + data.items.length > data.total_count)
+                more: (data.total_count > offset + data.items.length)
             };
         }
     },
