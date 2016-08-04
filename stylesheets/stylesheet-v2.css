@@ -358,52 +358,10 @@ Examples
     width: 40%;
 }
 
-.code-block {
+.example-code {
     float: right;
     margin-bottom: 10px;
-    position: relative;
     width: 50%;
-}
-
-.example-code {
-    display: none;
-}
-
-.example-code.active {
-    display: block;
-}
-
-.handles-container {
-    display: inline-block;
-    float: right;
-    margin-right: -25px;
-    overflow: hidden;
-}
-
-.handles {
-    box-shadow: 0 0 10px rgba(0,0,0,.1);
-    margin: 0 5px 5px;
-}
-
-.handle {
-    cursor: pointer;
-    display: inline-block;
-    background: #ccc;
-    padding: 5px 8px;
-}
-.handle.active {
-    background: #fff;
-    cursor: normal;
-}
-.handle:first-child {
-    border-bottom-left-radius: 2px;
-}
-.handle:last-child {
-    border-bottom-right-radius: 2px;
-}
-
-.attribute {
-    color: #840;
 }
 
 .comment {

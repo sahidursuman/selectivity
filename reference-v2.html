@@ -4,10 +4,10 @@
   <head>
     <meta charset='utf-8'>
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <meta name="description" content="Selectivity.js : Modular and light-weight selection library">
+    <meta name="description" content="Selectivity.js : Modular and light-weight selection library for jQuery and Zepto.js">
 
-    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
-    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/selectivity-jquery.css">
+    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet-v2.css">
+    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/selectivity-full.css">
     <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css">
 
     <title>selectivity</title>
@@ -21,10 +21,10 @@
           <a id="forkme_banner" href="https://github.com/arendjr/selectivity">View on GitHub</a>
 
           <h1 id="project_title">Selectivity.js</h1>
-          <h2 id="project_tagline">Modular and light-weight selection library</h2>
+          <h2 id="project_tagline">Modular and light-weight selection library for jQuery and Zepto.js</h2>
 
             <section id="downloads">
-              <a class="tar_download_link" href="https://github.com/arendjr/selectivity/releases/download/3.0.0-beta1/selectivity-3.0.0-beta1.tar.gz">Download this project as a tar.gz file</a>
+              <a class="tar_download_link" href="https://github.com/arendjr/selectivity/releases/download/v2.1.0/selectivity-2.1.0.tar.gz">Download this project as a tar.gz file</a>
             </section>
         </header>
     </div>
@@ -41,10 +41,9 @@ are customizable.</li>
 <li><b>Modular.</b> Selectivity's modular approach is aimed to make it easy to create custom builds with
 just the features that you care about and to easily swap modules for custom ones.</li>
 <li><b>Light-weight.</b> Selectivity.js is smaller than comparable selection libraries, even if you're
-using a build with all features packed in.</li>
-<li><b>Compatibility.</b> Selectivity.js can be used without any external libraries, but also offers a
-jQuery build that is compatible with both jQuery (including custom builds without Sizzle) and Zepto.js,
-and a build that is compatible with React. It's your choice how you want to use it.</li>
+using the &quot;full&quot; build with all features packed in.</li>
+<li><b>Compatibility.</b> Selectivity.js can be used with both jQuery and Zepto.js and is compatible with
+jQuery builds without Sizzle.</li>
 </ul>
 
 <h1>
@@ -57,26 +56,12 @@ and a build that is compatible with React. It's your choice how you want to use 
 
 <div id="example-1" class="selectivity-input example-input"></div>
 
-<div class="code-block">
-    <pre class="example-code react">
-<code>&lt;<div class="tag">Selectivity.React</div>
-    <span class="attribute">allowClear</span>={true}
-    <span class="attribute">items</span>={[<span class="string">'Amsterdam'</span>, <span class="string">'Antwerp'</span><span class="comment">/*, ...*/</span>]}
-    <span class="attribute">placeholder</span>={<span class="string">'No city selected'</span>}
-/&gt;</code>
-    </pre>
-    <pre class="example-code jquery active">
-<code>$(<span class="string">'#example-1'</span>).selectivity({
+<pre class="example-code"><code>$(<span class="string">'#example-1'</span>).selectivity({
     allowClear: true,
     items: [<span class="string">'Amsterdam'</span>, <span class="string">'Antwerp'</span><span class="comment">/*, ...*/</span>],
     placeholder: <span class="string">'No city selected'</span>
-});</code>
-    </pre>
-    <div class="handles">
-        <div class="handle react">React</div>
-        <div class="handle jquery active">jQuery</div>
-    </div>
-</div>
+});
+</code></pre>
 
 <h2>
 <a id="select-multiple-cities" class="anchor" href="#select-multiple-cities" aria-hidden="true"></a>Select multiple cities</h2>
@@ -85,27 +70,12 @@ and a build that is compatible with React. It's your choice how you want to use 
 
 <div id="example-2" class="selectivity-input example-input"></div>
 
-<div class="code-block">
-    <pre class="example-code react">
-<code>&lt;<div class="tag">Selectivity.React</div>
-    <span class="attribute">items</span>={[<span class="string">'Amsterdam'</span>, <span class="string">'Antwerp'</span><span class="comment">/*, ...*/</span>]}
-    <span class="attribute">multiple</span>={true}
-    <span class="attribute">placeholder</span>={<span class="string">'No city selected'</span>}
-/&gt;</code>
-    </pre>
-    <pre class="example-code jquery active">
-<code>$(<span class="string">'#example-2'</span>).selectivity({
+<pre class="example-code"><code>$(<span class="string">'#example-2'</span>).selectivity({
     items: [<span class="string">'Amsterdam'</span>, <span class="string">'Antwerp'</span><span class="comment">/*, ...*/</span>],
     multiple: true,
     placeholder: <span class="string">'Type to search a city'</span>
 });
-</code>
-    </pre>
-    <div class="handles">
-        <div class="handle react">React</div>
-        <div class="handle jquery active">jQuery</div>
-    </div>
-</div>
+</code></pre>
 
 <h2>
 <a id="select-a-city-by-country" class="anchor" href="#select-a-city-by-country" aria-hidden="true"></a>Select a city by country</h2>
@@ -114,19 +84,7 @@ and a build that is compatible with React. It's your choice how you want to use 
 
 <div id="example-3" class="selectivity-input example-input"></div>
 
-<div class="code-block">
-    <pre class="example-code react">
-<code>&lt;<div class="tag">Selectivity.React</div>
-    <span class="attribute">allowClear</span>={true}
-    <span class="attribute">items</span>={[{
-        text: <span class="string">'Austria'</span>,
-        children: [ { id: 54, text: <span class="string">'Vienna'</span> } ]
-    } <span class="comment">/*, ...*/</span>]}
-    <span class="attribute">placeholder</span>={<span class="string">'No city selected'</span>}
-/&gt;</code>
-    </pre>
-    <pre class="example-code jquery active">
-<code>$(<span class="string">'#example-3'</span>).selectivity({
+<pre class="example-code"><code>$(<span class="string">'#example-3'</span>).selectivity({
     allowClear: true,
     items: [{
         text: <span class="string">'Austria'</span>,
@@ -134,13 +92,7 @@ and a build that is compatible with React. It's your choice how you want to use 
     } <span class="comment">/*, ...*/</span>],
     placeholder: <span class="string">'No city selected'</span>
 });
-</code>
-    </pre>
-    <div class="handles">
-        <div class="handle react">React</div>
-        <div class="handle jquery active">jQuery</div>
-    </div>
-</div>
+</code></pre>
 
 <h2>
 <a id="select-a-city-by-timezone" class="anchor" href="#select-a-city-by-timezone" aria-hidden="true"></a>Select a city by timezone</h2>
@@ -149,27 +101,7 @@ and a build that is compatible with React. It's your choice how you want to use 
 
 <div id="example-4" class="selectivity-input example-input"></div>
 
-<div class="code-block">
-    <pre class="example-code react">
-<code>&lt;<div class="tag">Selectivity.React</div>
-    <span class="attribute">allowClear</span>={true}
-    <span class="attribute">items</span>={[{
-        id: <span class="string">'+00:00'</span>,
-        text: <span class="string">'Western European Time Zone'</span>,
-        submenu: {
-            items: [
-                { id: 4, text: <span class="string">'Barcelona'</span> }
-                <span class="comment">/*, ...*/</span>
-            ],
-            showSearchInput: true
-        }
-    } <span class="comment">/*, ...*/</span>]}
-    <span class="attribute">placeholder</span>={<span class="string">'No city selected'</span>}
-    <span class="attribute">showSearchInputInDropdown</span>={false}
-/&gt;</code>
-    </pre>
-    <pre class="example-code jquery active">
-<code>$(<span class="string">'#example-4'</span>).selectivity({
+<pre class="example-code"><code>$(<span class="string">'#example-4'</span>).selectivity({
     allowClear: true,
     items: [{
         id: <span class="string">'+00:00'</span>,
@@ -185,13 +117,7 @@ and a build that is compatible with React. It's your choice how you want to use 
     placeholder: <span class="string">'No city selected'</span>,
     showSearchInputInDropdown: false
 });
-</code>
-    </pre>
-    <div class="handles">
-        <div class="handle react">React</div>
-        <div class="handle jquery active">jQuery</div>
-    </div>
-</div>
+</code></pre>
 
 <h2>
 <a id="enter-one-or-more-email-addresses" class="anchor" href="#enter-one-or-more-email-addresses" aria-hidden="true"></a>Enter one or more email addresses</h2>
@@ -200,24 +126,11 @@ and a build that is compatible with React. It's your choice how you want to use 
 
 <div id="example-5" class="selectivity-input example-input"></div>
 
-<div class="code-block">
-    <pre class="example-code react">
-<code>&lt;<div class="tag">Selectivity.React</div>
-    <span class="attribute">inputType</span>={<span class="string">'Email'</span>}
-    <span class="attribute">placeholder</span>={<span class="string">'Type or paste email addresses'</span>}
-/&gt;</code>
-    </pre>
-    <pre class="example-code jquery active">
-<code>$(<span class="string">'#example-5'</span>).selectivity({
+<pre class="example-code"><code>$(<span class="string">'#example-5'</span>).selectivity({
     inputType: <span class="string">'Email'</span>,
     placeholder: <span class="string">'Type or paste email addresses'</span>
-});</code>
-    </pre>
-    <div class="handles">
-        <div class="handle react">React</div>
-        <div class="handle jquery active">jQuery</div>
-    </div>
-</div>
+});
+</code></pre>
 
 <h2>
 <a id="search-for-repository" class="anchor" href="#search-for-repository" aria-hidden="true"></a>Search a GitHub repository</h2>
@@ -226,78 +139,28 @@ and a build that is compatible with React. It's your choice how you want to use 
 
 <div id="example-6" class="selectivity-input example-input"></div>
 
-<pre class="example-code"></pre>
-
-<div class="code-block">
-    <pre class="example-code react">
-<code>&lt;<div class="tag">Selectivity.React</div>
-    <span class="attribute">ajax</span>={{
-        url: <span class="string">'https://api.github.com/search/repositories'</span>,
-        minimumInputLength: 3,
-        quietMillis: 250,
-        params: function(term, offset) {
-            <span class="comment">// GitHub uses 1-based pages with 30 results, by default</span>
-            return { q: term, page: 1 + Math.floor(offset / 30) };
-        },
-        fetch: function(url) {
-            return fetch(url)
-                .then(function(response) {
-                    if (response.ok) {
-                        return response.json();
-                    } else {
-                        throw new Error(<span class="string">'Unexpected AJAX response'</span>);
-                    }
-                })
-                .then(function(data) {
-                    return {
-                        results: data.items.map(function(item) {
-                            return {
-                                id: item.id,
-                                text: item.name,
-                                description: item.description
-                            };
-                        }),
-                        more: (data.total_count > offset + data.items.length)
-                    };
-                });
-        }
-    }}
-    <span class="attribute">placeholder</span>={<span class="string">'Search for a repository'</span>}
-    <span class="attribute">templates</span>={{
-        resultItem: function(item) {
-            return (
-                &lt;<span class="tag">div</span> <span class="attribute">className</span>=<span class="string">'selectivity-result-item'</span> <span class="attribute">data-item-id</span>={item.id}&gt;
-                    &lt;<span class="tag">b</span>&gt;{item.text}&lt;/<span class="tag">b</span>&gt;&lt;<span class="tag">br</span> /&gt;
-                    {item.description}
-                &lt;/<span class="tag">div</span>&gt;
-            );
-        }
-    }}
-/&gt;</code>
-    </pre>
-    <pre class="example-code jquery active">
-<code>$(<span class="string">'#example-6'</span>).selectivity({
+<pre class="example-code"><code>$(<span class="string">'#example-6'</span>).selectivity({
     ajax: {
         url: <span class="string">'https://api.github.com/search/repositories'</span>,
+        dataType: <span class="string">'json'</span>,
         minimumInputLength: 3,
         quietMillis: 250,
         params: function(term, offset) {
             <span class="comment">// GitHub uses 1-based pages with 30 results, by default</span>
             return { q: term, page: 1 + Math.floor(offset / 30) };
         },
-        fetch: function(url) {
-            return $.ajax(url).then(function(data) {
-                return {
-                    results: $.map(data.items, function(item) {
-                        return {
-                            id: item.id,
-                            text: item.name,
-                            description: item.description
-                        };
-                    }),
-                    more: (data.total_count > offset + data.items.length)
-                };
-            });
+        processItem: function(item) {
+            return {
+                id: item.id,
+                text: item.name,
+                description: item.description
+            };
+        },
+        results: function(data, offset) {
+            return {
+                results: data.items,
+                more: (data.total_count > offset + data.items.length)
+            };
         }
     },
     placeholder: <span class="string">'Search for a repository'</span>,
@@ -311,20 +174,11 @@ and a build that is compatible with React. It's your choice how you want to use 
             );
         }
     }
-});</code>
-    </pre>
-    <div class="handles">
-        <div class="handle react">React</div>
-        <div class="handle jquery active">jQuery</div>
-    </div>
-</div>
+});
+</code></pre>
 
 <h1>
-<a id="api" class="anchor" href="#api" aria-hidden="true"></a>API</h1>
-
-<p>Older references: <a href="reference-v2.html">v2</a></p>
-
-<h2>jQuery</h2>
+<a id="api" class="anchor" href="#api" aria-hidden="true"></a>API v2</h1>
 
 <p>Call <code>$(selector).selectivity(options)</code> to initialize a Selectivity instance on the
     element specified by the given selector. The element should be a <code>&lt;div&gt;</code>
@@ -332,19 +186,6 @@ and a build that is compatible with React. It's your choice how you want to use 
     a <code>&lt;select&gt;</code> element instead, this element will be used for initializing some
     of the options below after which it is replaced with a <code>&lt;div&gt;</code> element to
     contain the Selectivity control.</p>
-
-<h2>React</h2>
-
-<p>Render a Selectivity component as follows:</p>
-
-<p><code>&lt;Selectivity.React {...options} /&gt;</code></p>
-
-<p>This will create a <code>&lt;div&gt;</code> element in which the Selectivity control itself is
-    rendered. Note that besides the options documented below, also some generic attributes for
-    *divs* are allowed on this element (<code>className</code>, <code>onClick</code>,
-    <code>onInput</code>, <code>style</code>, ...).</p>
-
-<h2>Options</h2>
 
 <p>The following options are supported:</p>
 
@@ -361,66 +202,87 @@ and a build that is compatible with React. It's your choice how you want to use 
             <td>ajax</td>
             <td><code>Object</code></td>
             <td>This object is used for convenience for loading result items through AJAX requests
-                from a remote resource. Below is an overview of properties that may be set on this
-                object. Any other properties on this object are passed directly to the <i>fetch</i>
-                method (see below).
+                to a remote resource. Below is an overview of properties that may be set on this
+                object. Any other properties on this object are passed directly to the
+                <i>transport</i>, which by default is
+                <a href="http://api.jquery.com/jQuery.ajax/"><code>$.ajax()</code></a>.
 
-                <dl>
-                    <dt><b>fetch</b></dt>
-                    <dd>The function to use for fetching the AJAX results. By default,
-                        <a href="https://developer.mozilla.org/en-US/docs/Web/API/GlobalFetch/fetch"><code>window.fetch()</code></a>
-                        is used, unless you use a jQuery build. If you use a jQuery build, it will
-                        automatically replace the default with a wrapper that uses
-                        <code>$.ajax()</code> internally. If you don't use a jQuery build, you are
-                        encouraged to ship a polyfill for <code>window.fetch()</code>, because not
-                        all browsers support this yet (or you can always specify this property to
-                        implement custom fetch logic).<br>
-                        <br>
-                        If you implement this callback yourself, make sure you can accept the same
-                        parameters as <code>window.fetch()</code>. In addition, you will receive a
-                        third parameter which matches the parameter to the <code>query()</code>
-                        function documented below.<br>
-                        <br>
-                        Make sure you return a Promise that resolves to either a
-                        <a href="https://developer.mozilla.org/en-US/docs/Web/API/Response"><code>Response</code></a>
-                        object, an <code>Array</code> with result items, or an object with a
-                        <code>results</code> array and an optional <code>more</code> boolean. The
-                        latter case is further documented on the <code>query()</code> function
-                        below.</dd>
-
-                    <dt><b>formatError</b></dt>
-                    <dd>Function that returns an HTML-formatted error message in case of an AJAX
-                        error. By default, <code>Selectivity.Locale.ajaxError</code> is used. The
-                        function receives two parameters: <code>term</code> and <code>error</code>.
-                        The first is the term being searched for while the latter is the error
-                        object that resulted from the failed request. Please be aware that because
-                        the function returns raw HTML, you are responsible for properly escaping
-                        any output to prevent XSS attacks.</dd>
-
-                    <dt><b>minimumInputLength</b></dt>
-                    <dd>An integer that specifies the minimum amount of characters required before
-                        an actual AJAX query will be performed.</dd>
-
-                    <dt><b>params</b></dt>
-                    <dd>Function that should return an object with additional query parameters to be
-                        added to the URL. Receives <code>term</code> and <code>offset</code>
-                        parameters. The term is a search term to search for and the offset is an
-                        integer of results that should be skipped for pagination.</dd>
-
-                    <dt><b>quietMillis</b></dt>
-                    <dd>Number of milliseconds to wait before submitting AJAX requests when the user
-                        is entering a search term. It is advised to use some number around 200 to
-                        300 (milliseconds) to not delay results too much, while not submitting too
-                        many requests while the user is typing.</dd>
-
-                    <dt>url</dt>
-                    <dd>URL to send the AJAX requests to. This can be given either as a string or as
-                        a function returning a string. If a function is given, it is passed an
-                        <code>options</code> object with <code>offset</code> and <code>term</code>
-                        properties, just like the <code>query</code> method documented below. Note
-                        the URL does not need to contain (all) query parameters, as those can be
-                        specified using the <code>params</code> option.</dd>
-                </dl>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Property</th>
+                            <th>Description</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>formatError</td>
+                            <td>Function that returns an HTML-formatted error message in case of an
+                                AJAX error. By default, <code>Selectivity.Locale.ajaxError</code> is
+                                used. The function receives four paramenters: <code>term</code>,
+                                <code>jqXHR</code>, <code>textStatus</code> and
+                                <code>errorThrown</code>. The first is the term being searched for,
+                                while the other three are the parameters passed to the error
+                                callback of <code>$.ajax</code>. Please be aware that because the
+                                function returns raw HTML, you are responsible for properly escaping
+                                any output to prevent XSS attacks.</td>
+                        </tr>
+                        <tr>
+                            <td>minimumInputLength</td>
+                            <td>An integer that specifies the minimum amount of characters required
+                                before an actual AJAX query will be performed.</td>
+                        </tr>
+                        <tr>
+                            <td>params</td>
+                            <td>Function that should return an object with additional query
+                                parameters to be added to the URL. Receives <code>term</code> and
+                                <code>offset</code> parameters. The term is a search term to search
+                                for and the offset is an integer of results that should be skipped
+                                for pagination.</td>
+                        </tr>
+                        <tr>
+                            <td>processItem</td>
+                            <td>Function that processes an individual result item. Make sure that
+                                the returned item has <code>id</code> and <code>text</code>
+                                properties. By default, this is the identity function (a function
+                                that simply returns its only parameter).</td>
+                        </tr>
+                        <tr>
+                            <td>quietMillis</td>
+                            <td>Number of milliseconds to wait before submitting AJAX requests when
+                                the user is entering a search term. I would advise to use some
+                                number from 200 to 300 (milliseconds) to not delay results too much,
+                                while not submitting too many requests while the user is
+                                typing.</td>
+                        </tr>
+                        <tr>
+                            <td>results</td>
+                            <td>Function that interprets the data from the AJAX response and turns
+                                it into an object with <code>results</code> and <code>more</code>
+                                properties, just like the callback for the top-level
+                                <code>query</code> function. The function receives a
+                                <code>data</code> parameter containing the parsed AJAX response and
+                                an <code>offset</code> parameter used for pagination.</td>
+                        </tr>t
+                        <tr>
+                            <td>transport</td>
+                            <td>The transport to use for submitting the AJAX requests. By default,
+                                <code>$.ajax</code> is used, but you can specify any other function
+                                to use instead, as long as it's API-compatible with
+                                <code>$.ajax</code>.</td>
+                        </tr>
+                        <tr>
+                            <td>url</td>
+                            <td>URL to send the AJAX requests to. This can be given either as a
+                                string or as a function returning a string. If a function is given,
+                                it is passed an <code>options</code> object with <code>offset</code>
+                                and <code>term</code> properties, like the <code>query</code> method
+                                documented below. Note the URL does not need to contain (all) query
+                                parameters, as those can be specified using the <code>params</code>
+                                option.</td>
+                        </tr>
+                    </tbody>
+                </table>
             </td>
         </tr>
         <tr>
@@ -440,7 +302,8 @@ and a build that is compatible with React. It's your choice how you want to use 
                 in the search field but there are selected items, the last selected item will be
                 highlighted and when a second backspace is entered the item is deleted. If
                 <code>false</code>, the item gets deleted on the first backspace. The default value
-                is <code>false</code>.</td>
+                is <code>true</code> on devices that have touch input and <code>false</code> on
+                devices that don't.</td>
         </tr>
         <tr>
             <td>closeOnSelect</td>
@@ -469,32 +332,7 @@ and a build that is compatible with React. It's your choice how you want to use 
             <td><code>Object</code> or <code>Array</code></td>
             <td>Initial selection data to set. This should be an object with <code>id</code> and
                 <code>text</code> properties in the case of input type 'Single', or an array of such
-                objects otherwise. This option is mutually exclusive with <code>value</code>.<br>
-                <br>
-                If you're using the React API, you must also specify the <code>onChange</code>
-                listener to get updates when the data changes, or use <code>defaultData</code>
-                instead.</td>
-        </tr>
-        <tr>
-            <td>defaultData *(React only)*</td>
-            <td><code>Object</code> or <code>Array</code></td>
-            <td>Initial selection data to set. This should be an object with <code>id</code> and
-                <code>text</code> properties in the case of input type 'Single', or an array of such
-                objects otherwise. This option is mutually exclusive with
-                <code>defaultValue</code>.<br>
-                <br>
-                Unlike <code>data</code>, any changes to this property are not reflected on the data
-                of the Selectivity instance.</td>
-        </tr>
-        <tr>
-            <td>defaultValue *(React only)*</td>
-            <td><code>ID</code> or <code>Array</code></td>
-            <td>Initial value to set. This should be an ID (string or number) in the case of input
-                type 'Single', or array of IDs otherwise. This property is mutually exclusive with
-                <code>defaultData</code>.<br>
-                <br>
-                Unlike <code>value</code>, any changes to this property are not reflected on the
-                value of the Selectivity instance.</td>
+                objects otherwise. This option is mutually exclusive with <code>value</code>.</td>
         </tr>
         <tr>
             <td>dropdown</td>
@@ -578,8 +416,8 @@ and a build that is compatible with React. It's your choice how you want to use 
         <tr>
             <td>positionDropdown</td>
             <td><code>Function</code></td>
-            <td>Function to position the dropdown. Receives <code>dropdownEl</code> (the element to
-                be positioned) and <code>selectEl</code> (the element of the Selectivity instance)
+            <td>Function to position the dropdown. Receives <code>$dropdownEl</code> (the element to
+                be positioned) and <code>$selectEl</code> (the element of the Selectivity instance)
                 as arguments. The default implementation positions the dropdown element under the
                 Selectivity instance's element and gives it the same width as well.</td>
         </tr>
@@ -589,30 +427,47 @@ and a build that is compatible with React. It's your choice how you want to use 
             <td>Function to use for querying items. Receives a single object with the following
                 properties:
 
-                <dl>
-                    <dt><b>callback</b></dt>
-                    <dd>This is the function that should be invoked when the results are available.
-                        It should be passed a single object with <code>results</code> and
-                        <code>more</code> properties. The first is an array with result items in the
-                        same format as the <code>items</code> option and the latter is an optional
-                        boolean that may be set to <code>true</code> to indicate more results are
-                        available through pagination.</dd>
-                    <dt><b>error</b></dt>
-                    <dd>Another function that may be called to indicate the query operation failed.
-                        You should pass it a message which will be displayed to the user. Optionally
-                        you can pass an options object as the second argument, which may have an
-                        <code>escape</code> property which, if set to <code>false</code>, indicates
-                        the message contains raw HTML and should not be escaped. Be aware this does
-                        make you responsible for properly escaping user input to avoid XSS
-                        attacks.</dd>
-                    <dt>offset</dt>
-                    <dd>An integer that indicates how many results should be skipped when returning
-                        more results. This is used to implement pagination.</dd>
-                    <dt>term</dt>
-                    <dd>The search term the user is searching for. Unlike with the
-                        <code>matcher</code> function, the term has not been processed using
-                        <code>Selectivity.transformText()</code>.</dd>
-                </dl>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Property</th>
+                            <th>Description</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>callback</td>
+                            <td>This is the function that should be invoked when the results are
+                                available. It should be passed a single object with
+                                <code>results</code> and <code>more</code> properties. The first is
+                                an array with result items in the same format as the
+                                <code>items</code> option and the latter is an optional boolean
+                                that may be set to <code>true</code> to indicate more results are
+                                available through pagination.</td>
+                        </tr>
+                        <tr>
+                            <td>error</td>
+                            <td>Another function that may be called to indicate the query operation
+                                failed. You should pass it a message which will be displayed to the
+                                user. Optionally you can pass an options object as the second
+                                argument, which may have an <code>escape</code> property which, if
+                                set to <code>false</code>, indicates the message contains raw HTML
+                                and should not be escaped. Be aware this does make you responsible
+                                for properly escaping user input to avoid XSS attacks.</td>
+                        </tr>
+                        <tr>
+                            <td>offset</td>
+                            <td>An integer that indicates how many results should be skipped when
+                                returning more results. This is used to implement pagination.</td>
+                        </tr>
+                        <tr>
+                            <td>term</td>
+                            <td>The search term the user is searching for. Unlike with the
+                                <code>matcher</code> function, the term has not been processed
+                                using <code>Selectivity.transformText()</code>.</td>
+                        </tr>
+                    </tbody>
+                </table>
 
                 This option is ignored if the <code>items</code> option is used.</td>
         </tr>
@@ -628,26 +483,6 @@ and a build that is compatible with React. It's your choice how you want to use 
                 selected items.</td>
         </tr>
         <tr>
-            <td>shouldOpenSubmenu</td>
-            <td><code>Function</code></td>
-            <td>Callback to invoke whenever a result item is highlighted that will decide whether a
-                submenu should be opened. Receives two parameters:
-
-                <dl>
-                    <dt><b>item</b></dt>
-                    <dd>The currently highlighted result item.</dd>
-                    <dt><b>reason</b></dt>
-                    <dd>The reason why the item is being highlighted. Possible values:
-                        <code>'current_value'</code> (the item is being highlighted because it is
-                        the current value of the input), <code>'first_result'</code> (highlighted
-                        because it is the first result in the dropdown), <code>'hovered'</code>
-                        (the user hovered over the item).</dd>
-                </dl>
-
-                This function is only called for items for which a submenu is defined.
-            </td>
-        </tr>
-        <tr>
             <td>showDropdown</td>
             <td><code>Boolean</code></td>
             <td>Set to <code>false</code> if you don't want to use any dropdown (you can still open
@@ -661,9 +496,9 @@ and a build that is compatible with React. It's your choice how you want to use 
                 input in the dropdown to begin with. The default is <code>true</code>.</td>
         </tr>
         <tr>
-            <td>suppress<wbr>WheelSelector</td>
+            <td>suppressMouse<wbr>WheelSelector</td>
             <td><code>String</code> or <code>null</code></td>
-            <td>The Selectivity Dropdown by default suppresses wheel events so that any scrolling
+            <td>The Selectivity Dropdown by default suppresses mousewheel events so that any scrolling
                 in the dropdown doesn't affect the scroll position of the page. Through this option
                 you can select which selector should be monited for scroll events to suppress. Set
                 it to <code>null</code> to disable suppressing of mousewheel events altogether. The
@@ -674,7 +509,7 @@ and a build that is compatible with React. It's your choice how you want to use 
             <td><code>Object</code></td>
             <td>Object with instance-specific templates to override the global templates assigned to
                 <code>selectivity.Templates</code>. Inline documentation for the templates is provided
-                in <a href="https://github.com/arendjr/selectivity/blob/master/src/templates.js">src/templates.js</a>.</td>
+                in <a href="https://github.com/arendjr/selectivity/blob/master/src/selectivity-templates.js">selectivity-templates.js</a>.</td>
         </tr>
         <tr>
             <td>tokenizer</td>
@@ -702,11 +537,7 @@ and a build that is compatible with React. It's your choice how you want to use 
             <td><code>ID</code> or <code>Array</code></td>
             <td>Initial value to set. This should be an ID (string or number) in the case of input
                 type 'Single', or array of IDs otherwise. This property is mutually exclusive with
-                <code>data</code>.<br>
-                <br>
-                If you're using the React API, you must also specify the <code>onChange</code>
-                listener to get updates when the data changes, or use <code>defaultValue</code>
-                instead.</td>
+                <code>data</code>.</td>
         </tr>
     </tbody>
 </table>
@@ -714,19 +545,13 @@ and a build that is compatible with React. It's your choice how you want to use 
 <h1>
 <a id="methods" class="anchor" href="#methods" aria-hidden="true"></a>Methods</h1>
 
-<p>If you're using the jQuery API, methods are invoked by passing the name of the method, followed
-    by any arguments, to the <code>selectivity()</code> function. Example:<p>
+<p>Methods are invoked by passing the name of the method, followed by any arguments, to the
+    <code>selectivity()</code> function. Example:<p>
 
 <p><code>$(selector).selectivity(<span class="string">'data'</span>, { id: 1, text: <span class="string">'Amsterdam'</span> })</code></p>
 
-<p>If you're using the React API, the methods to use are somewhat limited, because you are expected
-    to use the component declaratively as much as possible. But for those methods available, you can
-    call them like ordinary methods if you have a reference to the component instance:
-
-<p><code>this.refs.selectivity.getData()</code></p>
-
 <h2>add</h2>
-<p><i>(jQuery only, multiple-value inputs only)</i></p>
+<p><i>(multiple-value inputs only)</i></p>
 
 <p>Adds an item to the selection.</p>
 
@@ -755,7 +580,6 @@ and a build that is compatible with React. It's your choice how you want to use 
 <p><code>$(selector).selectivity(<span class="string">'add'</span>, { id: 1, text: <span class="string">'Amsterdam'</span> })</code></p>
 
 <h2>clear</h2>
-<p><i>(jQuery only)</i></p>
 
 <p>Clears the selection.</p>
 
@@ -768,7 +592,6 @@ and a build that is compatible with React. It's your choice how you want to use 
 <p>Closes the dropdown.</p>
 
 <h2>data</h2>
-<p><i>(React: Only getData() is provided)</i></p>
 
 <p>Sets or gets the data of the selection. If no argument is given, the current data is returned.
     Otherwise, the data is set to the argument given.</p>
@@ -809,7 +632,7 @@ and a build that is compatible with React. It's your choice how you want to use 
 
 <p><b>Examples:</b></p>
 
-<pre class="api-example"><code><span class="comment">// returns the current data with jQuery:</span>
+<pre class="api-example"><code><span class="comment">// returns the current data:</span>
 $(selector).selectivity(<span class="string">'data'</span>)</code></pre>
 
 <pre class="api-example"><code><span class="comment">// sets new data on a single-value input:</span>
@@ -818,11 +641,7 @@ $(selector).selectivity(<span class="string">'data'</span>, { id: 1, text: <span
 <pre class="api-example"><code><span class="comment">// sets new data on a multiple-value input:</span>
 $(selector).selectivity(<span class="string">'data'</span>, [{ id: 1, text: <span class="string">'Amsterdam'</span> }, { id: 2, text: <span class="string">'Antwerp'</span> }])</code></pre>
 
-<pre class="api-example"><code><span class="comment">// returns the current data with React:</span>
-this.refs.selectivity.getData()</code></pre>
-
 <h2>destroy</h2>
-<p><i>(jQuery only)</i></p>
 
 <p>Destroys the Selectivity instance.</p>
 
@@ -839,7 +658,7 @@ destroying the Selectivity instance.
 <p>Opens the dropdown.</p>
 
 <h2>remove</h2>
-<p><i>(jQuery only, multiple-value inputs only)</i></p>
+<p><i>(multiple-value inputs only)</i></p>
 
 <p>Removes an item from the selection.</p>
 
@@ -868,7 +687,6 @@ destroying the Selectivity instance.
 <p><code>$(selector).selectivity(<span class="string">'remove'</span>, { id: 1, text: <span class="string">'Amsterdam'</span> })</code></p>
 
 <h2>rerenderSelection</h2>
-<p><i>(jQuery only)</i></p>
 
 <p>Re-renders the selection.</p>
 
@@ -877,7 +695,6 @@ call this method explicitly if you've updated the selection with the <code>trigg
 option set to <code>false</code>.</p>
 
 <h2>setOptions</h2>
-<p><i>(jQuery only)</i></p>
 
 <p>Sets one or more options of the Selectivity instance.</p>
 
@@ -904,7 +721,6 @@ option set to <code>false</code>.</p>
 <p><code>$(selector).selectivity(<span class="string">'setOptions'</span>, { readOnly: true })</code></p>
 
 <h2>value / val</h2>
-<p><i>(React: Only getValue() is provided)</i></p>
 
 <p>Sets or gets the value of the selection. If no argument is given, the current value is returned.
     Otherwise, the value is set to the argument given.</p>
@@ -951,7 +767,7 @@ option set to <code>false</code>.</p>
 
 <p><b>Examples:</b></p>
 
-<pre class="api-example"><code><span class="comment">// returns the current value with jQuery:</span>
+<pre class="api-example"><code><span class="comment">// returns the current value:</span>
 $(selector).selectivity(<span class="string">'value'</span>)</code></pre>
 
 <pre class="api-example"><code>$(selector).selectivity(<span class="string">'val'</span>)</code></pre>
@@ -961,10 +777,6 @@ $(selector).selectivity(<span class="string">'value'</span>, 1)</code></pre>
 
 <pre class="api-example"><code><span class="comment">// sets a new value on a multiple-value input:</span>
 $(selector).selectivity(<span class="string">'value'</span>, [1, 2])</code></pre>
-
-<pre class="api-example"><code><span class="comment">// returns the current value with React:</span>
-this.refs.selectivity.getValue()</pre>
-
 
 <h1>
 <a id="events" class="anchor" href="#events" aria-hidden="true"></a>Events</h1>
@@ -985,7 +797,7 @@ this.refs.selectivity.getValue()</pre>
     </thead>
     <tbody>
         <tr>
-            <td class="nowrap"><code>"change"</code> *(React: onChange)*</td>
+            <td class="nowrap"><code>"change"</code></td>
             <td>Emitted when the selection has been changed. The event object will contain the
                 following properties:
                 <dl>
@@ -1001,11 +813,11 @@ this.refs.selectivity.getValue()</pre>
             </td>
         </tr>
         <tr>
-            <td class="nowrap"><code>"selectivity-close"</code> *(React: onDropdownClose)*</td>
+            <td class="nowrap"><code>"selectivity-close"</code></td>
             <td>Emitted when the dropdown is closed.</td>
         </tr>
         <tr>
-            <td class="nowrap"><code>"selectivity-highlight"</code> *(React: onHighlight)*</td>
+            <td class="nowrap"><code>"selectivity-highlight"</code></td>
             <td>Emitted when an item in the dropdown is highlighted. The event object will contain
                 the following properties:
                 <dl>
@@ -1017,17 +829,17 @@ this.refs.selectivity.getValue()</pre>
             </td>
         </tr>
         <tr>
-            <td class="nowrap"><code>"selectivity-open"</code> *(React: onDropdownOpen)*</td>
+            <td class="nowrap"><code>"selectivity-open"</code></td>
             <td>Emitted when the dropdown is opened.</td>
         </tr>
         <tr>
-            <td class="nowrap"><code>"selectivity-opening"</code> *(React: onDropdownOpening)*</td>
+            <td class="nowrap"><code>"selectivity-opening"</code></td>
             <td>Emitted when the dropdown is about to be opened. You can call
                 <code>preventDefault()</code> on the event object to cancel the opening of the
                 dropdown.</td>
         </tr>
         <tr>
-            <td class="nowrap"><code>"selectivity-selected"</code> *(React: onSelect)*</td>
+            <td class="nowrap"><code>"selectivity-selected"</code></td>
             <td>Emitted when an item has been selected. The event object will contain the following
                 properties:
                 <dl>
@@ -1039,7 +851,7 @@ this.refs.selectivity.getValue()</pre>
             </td>
         </tr>
         <tr>
-            <td class="nowrap"><code>"selectivity-selecting"</code> *(React: onSelecting)*</td>
+            <td class="nowrap"><code>"selectivity-selecting"</code></td>
             <td>Emitted when an item is about to be selected. You can call
                 <code>preventDefault()</code> on on the event object to prevent the item from being
                 selected. The event object will contain the following properties:
@@ -1070,8 +882,10 @@ this.refs.selectivity.getValue()</pre>
       </footer>
     </div>
 
+
+
     <script src="javascripts/jquery.js"></script>
-    <script src="javascripts/selectivity-jquery.js"></script>
-    <script src="javascripts/main.js"></script>
+    <script src="javascripts/selectivity-full.js"></script>
+    <script src="javascripts/main-v2.js"></script>
   </body>
 </html>

@@ -337,6 +337,32 @@ var citiesByTimezone = [
     }
 ];
 
+var transformText = $.fn.selectivity.transformText;
+
+// example query function that returns at most 10 cities matching the given text
+function queryFunction(query) {
+    var term = query.term;
+    var offset = query.offset || 0;
+    var results = cities.filter(function(city) {
+        return transformText(city).indexOf(transformText(term)) > -1;
+    });
+    results.sort(function(a, b) {
+        a = transformText(a);
+        b = transformText(b);
+        var startA = (a.slice(0, term.length) === term),
+            startB = (b.slice(0, term.length) === term);
+        if (startA) {
+            return (startB ? (a > b ? 1 : -1) : -1);
+        } else {
+            return (startB ? 1 : (a > b ? 1 : -1));
+        }
+    });
+    setTimeout(query.callback({
+        more: results.length > offset + 10,
+        results: results.slice(offset, offset + 10)
+    }), 500);
+}
+
 $('#example-1').selectivity({
     allowClear: true,
     items: cities,
@@ -370,45 +396,38 @@ $('#example-5').selectivity({
 $('#example-6').selectivity({
     ajax: {
         url: 'https://api.github.com/search/repositories',
+        dataType: 'json',
         minimumInputLength: 3,
         quietMillis: 250,
         params: function(term, offset) {
             // GitHub uses 1-based pages with 30 results, by default
-            return { q: term, page: 1 + Math.floor(offset / 30) };
+            var page = 1 + Math.floor(offset / 30);
+
+            return { q: term, page: page };
         },
-        fetch: function(url) {
-            return $.ajax(url).then(function(data) {
-                return {
-                    results: $.map(data.items, function(item) {
-                        return {
-                            id: item.id,
-                            text: item.name,
-                            description: item.description
-                        };
-                    }),
-                    more: (data.total_count > offset + data.items.length)
-                };
-            });
+        processItem: function(item) {
+            return {
+                id: item.id,
+                text: item.name,
+                description: item.description
+            };
+        },
+        results: function(data, offset) {
+            return {
+                results: data.items,
+                more: (data.total_count > offset + data.items.length)
+            };
         }
     },
     placeholder: 'Search for a repository',
     templates: {
         resultItem: function(item) {
             return (
-                '<div class="selectivity-result-item" data-item-id="' + escape(item.id) + '">' +
+                '<div class="selectivity-result-item" data-item-id="' + item.id + '">' +
                     '<b>' + escape(item.text) + '</b><br>' +
                     escape(item.description) +
                 '</div>'
             );
         }
     }
-});
-
-// toggle between code samples
-$('body').on('click', '.handle', function(event) {
-    var active = ($(event.target).hasClass('jquery') ? 'react' : 'jquery');
-    $('.example-code').removeClass('active');
-    $('.example-code.' + active).addClass('active');
-    $('.handle').removeClass('active');
-    $('.handle.' + active).addClass('active');
 });
