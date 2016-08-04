@@ -104,8 +104,9 @@ footer p {
 }
 
 a {
-  text-decoration: none;
   color: #007edf;
+  cursor: pointer;
+  text-decoration: none;
   text-shadow: none;
 
   transition: color 0.5s ease;
@@ -393,7 +394,7 @@ Examples
 }
 .handle.active {
     background: #fff;
-    cursor: normal;
+    cursor: default;
 }
 .handle:first-child {
     border-bottom-left-radius: 2px;

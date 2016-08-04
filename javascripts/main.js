@@ -406,7 +406,7 @@ $('#example-6').selectivity({
 
 // toggle between code samples
 $('body').on('click', '.handle', function(event) {
-    var active = ($(event.target).hasClass('jquery') ? 'react' : 'jquery');
+    var active = ($(event.currentTarget).hasClass('jquery') ? 'jquery' : 'react');
     $('.example-code').removeClass('active');
     $('.example-code.' + active).addClass('active');
     $('.handle').removeClass('active');
