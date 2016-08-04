@@ -376,7 +376,7 @@ $('#example-6').selectivity({
             // GitHub uses 1-based pages with 30 results, by default
             return { q: term, page: 1 + Math.floor(offset / 30) };
         },
-        fetch: function(url) {
+        fetch: function(url, init, queryOptions) {
             return $.ajax(url).then(function(data) {
                 return {
                     results: $.map(data.items, function(item) {
@@ -386,7 +386,7 @@ $('#example-6').selectivity({
                             description: item.description
                         };
                     }),
-                    more: (data.total_count > offset + data.items.length)
+                    more: (data.total_count > queryOptions.offset + data.items.length)
                 };
             });
         }

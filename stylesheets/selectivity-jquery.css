@@ -167,7 +167,7 @@ input[type='text'].selectivity-multiple-input {
 
 .selectivity-single-result-container {
   position: absolute;
-  top: 0.8em;
+  top: 9px;
   right: 15px;
   left: 5px;
   overflow: hidden;
@@ -185,7 +185,7 @@ input[type='text'].selectivity-multiple-input {
 .selectivity-caret {
   position: absolute;
   right: 5px;
-  top: 0.7em; }
+  top: 8px; }
 
 @media only screen and (max-device-width: 480px) {
   .selectivity-single-select {
