@@ -36,7 +36,7 @@
 <h1>Benefits</h1>
 
 <ul>
-<li><b>Rich UI.</b> Select boxes made by selectivity have rich functionality, work out of the box and
+<li><b>Rich UI.</b> Select boxes made by Selectivity have rich functionality, work out of the box and
 are customizable.</li>
 <li><b>Modular.</b> Selectivity's modular approach is aimed to make it easy to create custom builds with
 just the features that you care about and to easily swap modules for custom ones.</li>
@@ -91,7 +91,7 @@ and a build that is compatible with React. It's your choice how you want to use 
 <code>&lt;<span class="tag">Selectivity.React</span>
     <span class="attribute">items</span>={[<span class="string">'Amsterdam'</span>, <span class="string">'Antwerp'</span><span class="comment">/*, ...*/</span>]}
     <span class="attribute">multiple</span>={true}
-    <span class="attribute">placeholder</span>=<span class="string">'No city selected'</span>
+    <span class="attribute">placeholder</span>=<span class="string">'Type to search a city'</span>
 /&gt;</code>
     </pre>
     <pre class="example-code jquery active">
@@ -326,6 +326,12 @@ and a build that is compatible with React. It's your choice how you want to use 
 </div>
 
 <h1>
+<a id="setup" class="anchor" href="#setup" aria-hidden="true"></a>Setup</h1>
+
+<p>For setup instructions, please see the
+    <a href="https://github.com/arendjr/selectivity#setup">GitHub project page</a>.</p>
+
+<h1>
 <a id="api" class="anchor" href="#api" aria-hidden="true"></a>API</h1>
 
 <p>Older references: <a href="reference-v2.html">v2</a></p>
@@ -347,7 +353,7 @@ and a build that is compatible with React. It's your choice how you want to use 
 
 <p>This will create a <code>&lt;div&gt;</code> element in which the Selectivity control itself is
     rendered. Note that besides the options documented below, also some generic attributes for
-    *divs* are allowed on this element (<code>className</code>, <code>onClick</code>,
+    <i>divs</i> are allowed on this element (<code>className</code>, <code>onClick</code>,
     <code>onInput</code>, <code>style</code>, ...).</p>
 
 <h2>Options</h2>
@@ -832,9 +838,9 @@ this.refs.selectivity.getData()</code></pre>
 
 <p>Destroys the Selectivity instance.</p>
 
-<p><b>Note:</b> If you had initialized your Selectivity instance from an <code>&lt;input&gt;</code>
-or <code>&lt;select&gt;</code> element, that element is gone forever and you won't get it back by
-destroying the Selectivity instance.
+<p><b>Note:</b> If you had initialized your Selectivity instance from a <code>&lt;select&gt;</code>
+element, that element is gone forever and you won't get it back by destroying the Selectivity
+instance.
 
 <h2>focus</h2>
 
